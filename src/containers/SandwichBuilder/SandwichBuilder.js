@@ -84,7 +84,7 @@ class SandwichBuilder extends Component {
     }
 
     purchaseHandler = () => {
-        
+        this.setState({purchasing: true});
     }
 
     purchaseCancelHandler = () => {
