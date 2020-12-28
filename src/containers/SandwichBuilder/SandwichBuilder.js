@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Aux from '../../hoc/Auxiliary/Auxiliary';
 import Sandwich from '../../components/Sandwich/Sandwich';
 import BuildControls from '../../components/Sandwich/BuildControls/BuildControls';
+import OrderSummary from '../../components/Sandwich/OrderSummary/OrderSummary';
+import Modal from '../../components/UI/Modal/Modal'
 
 const INGREDIENT_PRICES = {
     lettuce: 0.5,
@@ -19,7 +21,8 @@ class SandwichBuilder extends Component {
             meat: 2
         },
         totalPrice: 4,
-        purchasable: false
+        purchasable: false,
+        purchasing: false
     }
 
     updatePurchaseState(ingredients) {
@@ -84,6 +87,14 @@ class SandwichBuilder extends Component {
         
     }
 
+    purchaseCancelHandler = () => {
+        this.setState({purchasing: false});
+    }
+
+    purchaseContinueHandler = () => {
+        alert('You continue');
+    }
+
     render () {
         const disabledInfo = {
             ...this.props.ings
@@ -91,9 +102,19 @@ class SandwichBuilder extends Component {
         for(let key in disabledInfo){
             disabledInfo[key] = disabledInfo[key] <= 0;
         }
-         
+        
+        let orderSummary = <OrderSummary 
+            ingredients={this.state.ingredients}
+            price={this.state.totalPrice}
+            purchaseCancelled={this.purchaseCancelHandler}
+            purchaseContinued={this.purchaseContinueHandler} />;
         return (
             <Aux>
+                <Modal
+                    show={this.state.purchasing}
+                    modalClosed={this.purchaseCancelHandler} >
+                    {orderSummary}
+                </Modal>
                 <Sandwich ingredients={this.state.ingredients} />
                 <BuildControls
                     price={this.state.totalPrice}
