@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import Button from '../../../components/UI/Button/Button';
 import classes from './ContactData.css';
+import axios from '../../../axios-orders';
+import Spinner from '../../../components/UI/Spinner/Spinner';
+import Input from '../../../components/UI/Input/Input';
+import { connect } from 'react-redux';
+import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
+import * as actions from '../../../store/actions/index';
 
 class ContactData extends Component {
     state = {
@@ -98,7 +104,15 @@ class ContactData extends Component {
         for(let formElementIdentifier in this.state.orderForm){
             formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
         }
-        
+
+        const order = {
+            ingredients: this.props.ings,
+            price: this.props.price,
+            orderData: formData,
+            userId: this.props.userId
+        }
+
+        this.props.onOrderSandwich(order, this.props.token);
         
     }
 
@@ -167,7 +181,9 @@ class ContactData extends Component {
                 <Button btnType="Success" disabled={!this.state.formIsValid}>ORDER</Button>
             </form>
         );
-
+        if(this.props.loading){
+            form = <Spinner />;
+        }
         return (
             <div className={classes.ContactData}>
                 <h4>Enter your Contact Data</h4>
@@ -177,4 +193,20 @@ class ContactData extends Component {
     }
 }
 
-export default ContactData;
+const mapStateToProps = state => {
+    return {
+        ings: state.sandwichBuilder.ingredients,
+        price: state.sandwichBuilder.totalPrice,
+        loading: state.order.loading,
+        token: state.auth.token,
+        userId: state.auth.userId
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onOrderSandwich: (orderData, token) => dispatch(actions.purchaseSandwich(orderData, token))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(ContactData, axios));

@@ -1,5 +1,4 @@
 import React from 'react';
-import sandwich from '../../Sandwich/Sandwich';
 import Sandwich from '../../Sandwich/Sandwich';
 import Button from '../../UI/Button/Button';
 import classes from './CheckoutSummary.css';
@@ -9,7 +8,7 @@ const checkoutSummary = (props) => {
         <div className={classes.CheckoutSummary}>
             <h1>We hope it tastes well!</h1>
             <div style={{width: '100%', margin: 'auto'}}>
-                <sandwich ingredients={props.ingredients}/>
+                <Sandwich ingredients={props.ingredients}/>
             </div>
             <Button 
                 btnType = "Danger"
